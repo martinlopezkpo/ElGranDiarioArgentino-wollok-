@@ -1,0 +1,127 @@
+import example.*
+
+describe "testeo parte 1"
+{	const clarin = new Diario (gastosFijos=999999)
+
+	const tin = new Trabajador(sueldo = 10000, nombre = "martin")
+	const agu = new Trabajador(sueldo = 10000, nombre = "agustin")
+	const fab = new Trabajador(sueldo = 150000, nombre = "fabiana")
+	
+	const lunes 	 = new Edicion(paginas=85, costo=55, ejImpresos=10000, fecha = new Date(1, 1, 2018))
+	const martes 	 = new Edicion(paginas=75, costo=10, ejImpresos=20000, fecha = new Date(2, 1, 2018))
+	const miercoles  = new Edicion(paginas=88, costo=20, ejImpresos=15000, fecha = new Date(3, 1, 2018))
+	const jueves 	 = new Edicion(paginas=60, costo=30, ejImpresos=17000, fecha = new Date(4, 1, 2018))
+	const viernes 	 = new Edicion(paginas=36, costo=40, ejImpresos=22000, fecha = new Date(5, 1, 2018))
+	const sabado	 = new Edicion(paginas=45, costo=56, ejImpresos=12000, fecha = new Date(6, 1, 2018))
+	const domingo 	 = new Edicion(paginas=77, costo=80, ejImpresos=26000, fecha = new Date(7, 1, 2018))
+
+	//publicidades y auspiciantes
+	const matarazzo = new Auspiciante(costoXcm=2, costoXcant=2000)
+	const fideos 	= new Publicidad(auspiciante=matarazzo, centimetros=10)
+	const chocolate = new Publicidad(auspiciante=matarazzo, centimetros=10)
+	const yerba 	= new Publicidad(auspiciante=matarazzo, centimetros=10)
+
+	const molto 	= new Auspiciante(costoXcm=3, costoXcant=1900)
+	const mermelada	= new Publicidad(auspiciante=molto, centimetros=10)
+	const vinagre 	= new Publicidad(auspiciante=molto, centimetros=10)
+	const aceite 	= new Publicidad(auspiciante=molto, centimetros=10)
+
+	const natura	= new Auspiciante(costoXcm=4, costoXcant=2100)
+	const harina	= new Publicidad(auspiciante=natura, centimetros=10)
+	const maicena 	= new Publicidad(auspiciante=natura, centimetros=10)
+	const lavandina	= new Publicidad(auspiciante=natura, centimetros=10)
+	
+	const marolio	= new Auspiciante(costoXcm=4, costoXcant=2100)
+
+	const conIgualdad = new Publicidad(auspiciante=estado, centimetros=10)
+	const obrasPublic = new Publicidad(auspiciante=estado, centimetros=10)
+	const renovarDNI  = new Publicidad(auspiciante=estado, centimetros=10)
+
+	//notas
+	const paroGeneral 		= new Nota(centimetros=10,periodista=tin,seccion="politica")
+	const finallibertadores = new Nota(centimetros=10,periodista=tin,seccion="deportes")
+	
+	const fecha = new Date(1, 1, 2018)
+	const fecha2 = new Date(2, 1, 2018)
+	fixture {
+		clarin.nuevoEmpleado(tin)
+		clarin.nuevosEmpleados([agu, fab])
+
+		lunes.nuevoContenido(paroGeneral)
+		lunes.nuevosContenidos([finallibertadores,     fideos, chocolate, yerba, conIgualdad, obrasPublic, renovarDNI, mermelada, vinagre, aceite, harina, maicena, lavandina])
+		martes.nuevoContenido(paroGeneral)
+		martes.nuevosContenidos([                              chocolate, yerba, conIgualdad, obrasPublic, renovarDNI, mermelada, vinagre, aceite, harina, maicena, lavandina])
+		miercoles.nuevoContenido(paroGeneral)
+		miercoles.nuevosContenidos([finallibertadores, fideos, chocolate, yerba, conIgualdad, obrasPublic, renovarDNI, mermelada, vinagre, aceite, harina, maicena, lavandina])
+		jueves.nuevoContenido(paroGeneral)
+		jueves.nuevosContenidos([finallibertadores,    fideos, chocolate, yerba, conIgualdad, obrasPublic, renovarDNI, mermelada, vinagre, aceite, harina, maicena, lavandina])
+		viernes.nuevoContenido(paroGeneral)
+		viernes.nuevosContenidos([finallibertadores,   fideos, chocolate, yerba, conIgualdad, obrasPublic, renovarDNI, mermelada, vinagre, aceite, harina, maicena, lavandina])
+		sabado.nuevoContenido(paroGeneral)
+		sabado.nuevosContenidos([finallibertadores,    fideos, chocolate, yerba, conIgualdad, obrasPublic, renovarDNI, mermelada, vinagre, aceite, harina, maicena, lavandina])
+		domingo.nuevoContenido(paroGeneral)
+		domingo.nuevosContenidos([finallibertadores,   fideos, chocolate, yerba, conIgualdad, obrasPublic, renovarDNI, mermelada, vinagre, aceite, harina, maicena, lavandina])
+
+		clarin.nuevaEdicion(lunes)
+		clarin.nuevasEdiciones([martes, miercoles, jueves, viernes, sabado, domingo])
+		
+		clarin.nuevoAusp(matarazzo)
+		clarin.nuevosAusps([molto, natura, estado, marolio])
+	}
+
+	test "1.1.a)la edicion del 1/1/2018 tiene 140cm ocupados"
+	{	assert.equals(140, clarin.cuantosCentimetrosOcupaEsta(fecha))
+	}
+	test "1.1.b)la edicion del 2/1/2018 tiene 120cm ocupados"
+	{	assert.equals(120, clarin.cuantosCentimetrosOcupaEsta(fecha2))
+	}
+	test "1.2.a)en el diario, la harina se repite 7 veces"
+	{	assert.equals(7, clarin.cuantasVecesSeRepiteEsta(harina))
+	}
+	test "1.2.b)en el diario, la harina se repite 6 veces, ya que borre una a proposito"
+	{	lunes.contenidos().remove(harina)
+		assert.equals(6, clarin.cuantasVecesSeRepiteEsta(harina))
+	}
+	test "1.3.a)el diario tiene contenido politico en todas las ediciones"
+	{	assert.that(clarin.enTodasHubocontenidoPolitico())
+	}
+	test "1.3.b)el diario, en este test, no tiene contenido politico en todas las ediciones"
+	{	lunes.contenidos().remove(paroGeneral)
+		lunes.contenidos().remove(conIgualdad)
+		lunes.contenidos().remove(obrasPublic)
+		lunes.contenidos().remove(renovarDNI)
+		assert.notThat(clarin.enTodasHubocontenidoPolitico())
+	}
+	test "2.1.a)edicion del 1/1/2018, imprimo 10.000, vendo 5.000, y no se venden... 5.000"
+	{	clarin.venderEjemplares(fecha, 5000)
+		assert.equals(5000, clarin.cuantosEjemplaresSinVender(fecha))
+	}
+	test "2.1.b)edicion del 1/1/2018, imprimo 10.000, vendo 8.000, y no se venden... 2.000"
+	{	clarin.venderEjemplares(fecha, 8000)
+		assert.equals(2000, clarin.cuantosEjemplaresSinVender(fecha))
+	}
+	test "2.1.b)edicion del 1/1/2018, imprimo 10.000, vendo 10.000, y no se venden... 0"
+	{	clarin.venderEjemplares(fecha, 10000)
+		assert.equals(0, clarin.cuantosEjemplaresSinVender(fecha))
+	}
+	test "3.1.a)el diario tiene ganancias positivas el mes de enero(usamos fecha, como referencia completa)"
+	{	//recordar que fecha esta seteada como 1 1 2018, hace referencia al 1 de enero del 2018
+		assert.that(clarin.gananciaMensual(fecha) > 0)
+	}
+	test "3.2.a)el diario tiene a fabiana, es quien cobra mas que el promedio de la media"
+	{	assert.equals([fab], clarin.quienesCobranMasQueElPromedio())
+	}
+	test "3.3.a)PROBANDO LA UNIFICACION DE TODAS LAS PUBLICIDADES..."
+	{	assert.equals([fideos, chocolate, yerba, conIgualdad, obrasPublic, renovarDNI, mermelada, vinagre, aceite, harina, maicena, lavandina, chocolate, yerba, conIgualdad, obrasPublic, renovarDNI, mermelada, vinagre, aceite, harina, maicena, lavandina, fideos, chocolate, yerba, conIgualdad, obrasPublic, renovarDNI, mermelada, vinagre, aceite, harina, maicena, lavandina, fideos, chocolate, yerba, conIgualdad, obrasPublic, renovarDNI, mermelada, vinagre, aceite, harina, maicena, lavandina, fideos, chocolate, yerba, conIgualdad, obrasPublic, renovarDNI, mermelada, vinagre, aceite, harina, maicena, lavandina, fideos, chocolate, yerba, conIgualdad, obrasPublic, renovarDNI, mermelada, vinagre, aceite, harina, maicena, lavandina, fideos, chocolate, yerba, conIgualdad, obrasPublic, renovarDNI, mermelada, vinagre, aceite, harina, maicena, lavandina], clarin.todasLasPublicidades())
+	}
+	test "3.3.b)PROBANDO CUANTO COSTO PARA CADA AUSPICIANTE..."
+	{	//mataraso:404000, molto:405300, natura:449400, estado:25200, marolio:0
+		assert.equals([404000,405300,449400,25200,0], clarin.cuantoCostoParaCadaAuspiciante())
+	}
+	test "3.3.c)EL MEJOR AUSPICIANTE ES... NATURA"
+	{	assert.equals(natura, clarin.quienEsElMejorAuspiciante())
+	}
+	test "3.3.c)EL PEOR AUSPICIANTE ES... MAROLIO(NO PUBLICO NADA)"
+	{	assert.equals([marolio], clarin.quienesNuncaPublicaronNADA())
+	}
+}
